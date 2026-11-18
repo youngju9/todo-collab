@@ -37,3 +37,6 @@ build/
 .env
 .env.*
 !.env.example
+
+# Java compiled output
+/bin/
