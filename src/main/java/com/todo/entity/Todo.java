@@ -26,14 +26,15 @@ public class Todo {
     private boolean completed;     // 완료 여부
     private LocalDateTime createdAt; // 등록일
     private LocalDateTime updatedAt; // 수정일
-    @PrePersist
-protected void onCreate() {
-    createdAt = LocalDateTime.now();
-    updatedAt = LocalDateTime.now();
-}
 
-@PreUpdate
-protected void onUpdate() {
-    updatedAt = LocalDateTime.now();
-}
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }
