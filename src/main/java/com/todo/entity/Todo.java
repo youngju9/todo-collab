@@ -27,6 +27,13 @@ public class Todo {
     private LocalDateTime createdAt; // 등록일
     private LocalDateTime updatedAt; // 수정일
 
+    public Todo(String title, String content, LocalDate dueDate) {
+        this.title = title;
+        this.content = content;
+        this.dueDate = dueDate;
+        this.completed = false;
+    }
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

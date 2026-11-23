@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>할 일 등록</title>
+</head>
+<body>
+    <h1>할 일 등록</h1>
+
+    <form th:action="@{/todos}" th:object="${todoCreateRequest}" method="post">
+        <div>
+            <label for="title">제목</label>
+            <input type="text" id="title" th:field="*{title}">
+            <p th:if="${#fields.hasErrors('title')}"
+               th:errors="*{title}"></p>
+        </div>
+
+        <div>
+            <label for="content">내용</label>
+            <textarea id="content" th:field="*{content}"></textarea>
+        </div>
+
+        <div>
+            <label for="dueDate">마감일</label>
+            <input type="date" id="dueDate" th:field="*{dueDate}">
+            <p th:if="${#fields.hasErrors('dueDate')}"
+               th:errors="*{dueDate}"></p>
+        </div>
+
+        <button type="submit">등록하기</button>
+    </form>
+</body>
+</html>
