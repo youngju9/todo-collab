@@ -20,21 +20,22 @@ public class TodoController {
 
     private final TodoService todoService;
 
-@GetMapping("/new")
-public String showCreateForm(Model model) {
-    model.addAttribute("todoCreateRequest", new TodoCreateRequest());
-    return "todos/new";
-}    
-@PostMapping
-public String createTodo(
-        @Valid @ModelAttribute("todoCreateRequest") TodoCreateRequest request,
-        BindingResult bindingResult) {
-
-    if (bindingResult.hasErrors()) {
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("todoCreateRequest", new TodoCreateRequest());
         return "todos/new";
     }
 
-    todoService.createTodo(request);
-    return "redirect:/todos";
-}
+    @PostMapping
+    public String createTodo(
+            @Valid @ModelAttribute("todoCreateRequest") TodoCreateRequest request,
+            BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return "todos/new";
+        }
+
+        todoService.createTodo(request);
+        return "redirect:/todos";
+    }
 }
