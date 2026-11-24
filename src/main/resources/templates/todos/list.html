@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>할 일 목록</title>
+</head>
+<body>
+    <h1>할 일 목록</h1>
+
+    <a href="/todos/new">+ 새 할 일 등록</a>
+
+    <p th:if="${#lists.isEmpty(todos)}">등록된 할 일이 없습니다.</p>
+
+    <table th:unless="${#lists.isEmpty(todos)}" border="1">
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>마감일</th>
+                <th>상태</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="todo : ${todos}">
+                <td th:text="${todo.id}">1</td>
+                <td th:text="${todo.title}">제목</td>
+                <td th:text="${todo.dueDate}">2026-11-30</td>
+                <td th:text="${todo.completed} ? '완료' : '진행 중'">진행 중</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

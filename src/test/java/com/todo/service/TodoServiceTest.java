@@ -43,4 +43,52 @@ class TodoServiceTest {
         assertThat(todos.get(0).getDueDate()).isEqualTo(LocalDate.of(2026, 11, 25));
         assertThat(todos.get(0).isCompleted()).isFalse();
     }
+
+    @Test
+    void getTodos_빈목록조회() {
+        // given: 아무것도 등록하지 않은 상태
+
+        // when: 목록 조회
+        List<Todo> todos = todoService.getTodos();
+
+        // then: 빈 목록이 반환됨
+        assertThat(todos).isEmpty();
+    }
+
+    @Test
+    void getTodos_목록조회성공() {
+        // given: 할 일 2개 등록
+        todoService.createTodo(createRequest("첫 번째 할 일"));
+        todoService.createTodo(createRequest("두 번째 할 일"));
+
+        // when: 목록 조회
+        List<Todo> todos = todoService.getTodos();
+
+        // then: 등록한 2개가 모두 조회됨
+        assertThat(todos).hasSize(2);
+    }
+
+    @Test
+    void getTodos_최신등록순정렬() throws InterruptedException {
+        // given: 할 일을 시간 차이를 두고 순서대로 등록
+        todoService.createTodo(createRequest("먼저 등록한 할 일"));
+        Thread.sleep(10);
+        todoService.createTodo(createRequest("나중에 등록한 할 일"));
+
+        // when: 목록 조회
+        List<Todo> todos = todoService.getTodos();
+
+        // then: 나중에 등록한 할 일이 첫 번째로 옴
+        assertThat(todos.get(0).getTitle()).isEqualTo("나중에 등록한 할 일");
+        assertThat(todos.get(1).getTitle()).isEqualTo("먼저 등록한 할 일");
+    }
+
+    // 테스트용 등록 요청 데이터를 만드는 도우미 메서드
+    private TodoCreateRequest createRequest(String title) {
+        TodoCreateRequest request = new TodoCreateRequest();
+        request.setTitle(title);
+        request.setContent("테스트 내용");
+        request.setDueDate(LocalDate.of(2026, 11, 30));
+        return request;
+    }
 }
