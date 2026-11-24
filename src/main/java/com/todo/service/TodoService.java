@@ -1,5 +1,8 @@
 package com.todo.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import com.todo.repository.TodoRepository;
@@ -22,4 +25,8 @@ public class TodoService {
 
         todoRepository.save(todo);
     }
+
+        public List<Todo> getTodos() {
+        return todoRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+        }
 }

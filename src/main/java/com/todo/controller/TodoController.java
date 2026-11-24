@@ -12,13 +12,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import java.util.List;
+import com.todo.entity.Todo;
 @Controller
 @RequestMapping("/todos")
 @RequiredArgsConstructor
 public class TodoController {
 
     private final TodoService todoService;
+
+    @GetMapping
+    public String showTodoList(Model model) {
+        List<Todo> todos = todoService.getTodos();
+        model.addAttribute("todos", todos);
+        return "todos/list";
+    }
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
@@ -37,5 +45,6 @@ public class TodoController {
 
         todoService.createTodo(request);
         return "redirect:/todos";
+        
     }
 }
