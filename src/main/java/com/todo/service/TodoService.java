@@ -26,7 +26,7 @@ public class TodoService {
         todoRepository.save(todo);
     }
 
-        public List<Todo> getTodos() {
+    public List<Todo> getTodos() {
         return todoRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
-        }
+    }
 }
