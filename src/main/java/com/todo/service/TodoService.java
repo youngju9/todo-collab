@@ -29,4 +29,10 @@ public class TodoService {
     public List<Todo> getTodos() {
         return todoRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
     }
+
+    public void deleteTodo(Long id) {
+        Todo todo = todoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 할 일이 없습니다. id=" + id));
+        todoRepository.delete(todo);
+    }
 }

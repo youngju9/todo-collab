@@ -18,6 +18,7 @@
                 <th>제목</th>
                 <th>마감일</th>
                 <th>상태</th>
+                <th>삭제</th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +27,11 @@
                 <td th:text="${todo.title}">제목</td>
                 <td th:text="${todo.dueDate}">2026-11-30</td>
                 <td th:text="${todo.completed} ? '완료' : '진행 중'">진행 중</td>
+                <td>
+                    <form th:action="@{/todos/{id}/delete(id=${todo.id})}" method="post">
+                        <button type="submit" onclick="return confirm('정말 삭제할까요?')">삭제</button>
+                    </form>
+                </td>
             </tr>
         </tbody>
     </table>
