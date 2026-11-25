@@ -32,8 +32,7 @@ public class TodoService {
     }
 
     public void deleteTodo(Long id) {
-        Todo todo = todoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 할 일이 없습니다. id=" + id));
+        Todo todo = getTodo(id);
         todoRepository.delete(todo);
     }
 

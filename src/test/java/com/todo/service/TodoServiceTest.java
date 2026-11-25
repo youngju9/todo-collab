@@ -108,12 +108,12 @@ class TodoServiceTest {
     @Test
     void deleteTodo_없는할일삭제시예외() {
         // given: 존재하지 않는 id
-        Long notExistId = 999L;
+        Long notExistId = Long.MAX_VALUE;
 
         // when & then: 삭제하면 예외 발생
         assertThatThrownBy(() -> todoService.deleteTodo(notExistId))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("해당 할 일이 없습니다");
+                .isInstanceOf(TodoNotFoundException.class)
+                .hasMessageContaining("존재하지 않는 할 일입니다.");
     }
 
     @Test
