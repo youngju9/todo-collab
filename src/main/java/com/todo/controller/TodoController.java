@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 import com.todo.entity.Todo;
 @Controller
@@ -26,6 +27,13 @@ public class TodoController {
         List<Todo> todos = todoService.getTodos();
         model.addAttribute("todos", todos);
         return "todos/list";
+    }
+
+    @GetMapping("/{id}")
+    public String showTodoDetail(@PathVariable("id") Long id, Model model) {
+        Todo todo = todoService.getTodo(id);
+        model.addAttribute("todo", todo);
+        return "todos/detail";
     }
 
     @GetMapping("/new")

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import com.todo.repository.TodoRepository;
 import com.todo.dto.TodoCreateRequest;
 import com.todo.entity.Todo;
+import com.todo.exception.TodoNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -28,5 +29,10 @@ public class TodoService {
 
     public List<Todo> getTodos() {
         return todoRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+    }
+
+    public Todo getTodo(Long id) {
+        return todoRepository.findById(id)
+            .orElseThrow(() -> new TodoNotFoundException("존재하지 않는 할 일입니다."));
     }
 }
