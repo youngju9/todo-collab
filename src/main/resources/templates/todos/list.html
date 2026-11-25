@@ -23,7 +23,10 @@
         <tbody>
             <tr th:each="todo : ${todos}">
                 <td th:text="${todo.id}">1</td>
-                <td th:text="${todo.title}">제목</td>
+                <td>
+                    <a th:href="@{/todos/{id}(id=${todo.id})}"
+                       th:text="${todo.title}">제목</a>
+                </td>
                 <td th:text="${todo.dueDate}">2026-11-30</td>
                 <td th:text="${todo.completed} ? '완료' : '진행 중'">진행 중</td>
             </tr>

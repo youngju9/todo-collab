@@ -2,6 +2,7 @@ package com.todo.service;
 
 import com.todo.dto.TodoCreateRequest;
 import com.todo.entity.Todo;
+import com.todo.exception.TodoNotFoundException;
 import com.todo.repository.TodoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -81,6 +83,36 @@ class TodoServiceTest {
         // then: 나중에 등록한 할 일이 첫 번째로 옴
         assertThat(todos.get(0).getTitle()).isEqualTo("나중에 등록한 할 일");
         assertThat(todos.get(1).getTitle()).isEqualTo("먼저 등록한 할 일");
+    }
+
+    @Test
+    void getTodo_상세조회성공() {
+        // given: 조회할 할 일 등록
+        todoService.createTodo(createRequest("상세 조회 테스트"));
+        Todo savedTodo = todoRepository.findAll().get(0);
+
+        // when: ID를 기준으로 상세 조회
+        Todo todo = todoService.getTodo(savedTodo.getId());
+
+        // then: 조회한 할 일의 정보 검증
+        assertThat(todo.getId()).isEqualTo(savedTodo.getId());
+        assertThat(todo.getTitle()).isEqualTo("상세 조회 테스트");
+        assertThat(todo.getContent()).isEqualTo("테스트 내용");
+        assertThat(todo.getDueDate()).isEqualTo(LocalDate.of(2026, 11, 30));
+        assertThat(todo.isCompleted()).isFalse();
+        assertThat(todo.getCreatedAt()).isNotNull();
+        assertThat(todo.getUpdatedAt()).isNotNull();
+    }
+
+    @Test
+    void getTodo_존재하지않는할일조회() {
+        // given: 존재하지 않는 할 일 ID
+        Long id = Long.MAX_VALUE;
+
+        // when & then: 상세 조회 시 예외 발생 검증
+        assertThatThrownBy(() -> todoService.getTodo(id))
+            .isInstanceOf(TodoNotFoundException.class)
+            .hasMessage("존재하지 않는 할 일입니다.");
     }
 
     // 테스트용 등록 요청 데이터를 만드는 도우미 메서드
