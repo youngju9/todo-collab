@@ -86,6 +86,37 @@ class TodoServiceTest {
     }
 
     @Test
+    void deleteTodo_삭제성공() {
+        // given: 할 일 2개 등록 후 삭제할 할 일의 id 찾기
+        todoService.createTodo(createRequest("삭제할 일"));
+        todoService.createTodo(createRequest("남을 일"));
+        Long deleteId = todoService.getTodos().stream()
+                .filter(todo -> todo.getTitle().equals("삭제할 일"))
+                .findFirst()
+                .orElseThrow()
+                .getId();
+
+        // when: 할 일 삭제
+        todoService.deleteTodo(deleteId);
+
+        // then: 삭제한 할 일은 없고 나머지 1개만 남음
+        List<Todo> todos = todoService.getTodos();
+        assertThat(todos).hasSize(1);
+        assertThat(todos.get(0).getTitle()).isEqualTo("남을 일");
+    }
+
+    @Test
+    void deleteTodo_없는할일삭제시예외() {
+        // given: 존재하지 않는 id
+        Long notExistId = Long.MAX_VALUE;
+
+        // when & then: 삭제하면 예외 발생
+        assertThatThrownBy(() -> todoService.deleteTodo(notExistId))
+                .isInstanceOf(TodoNotFoundException.class)
+                .hasMessageContaining("존재하지 않는 할 일입니다.");
+    }
+
+    @Test
     void getTodo_상세조회성공() {
         // given: 조회할 할 일 등록
         todoService.createTodo(createRequest("상세 조회 테스트"));

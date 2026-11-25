@@ -31,6 +31,11 @@ public class TodoService {
         return todoRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
+    public void deleteTodo(Long id) {
+        Todo todo = getTodo(id);
+        todoRepository.delete(todo);
+    }
+
     public Todo getTodo(Long id) {
         return todoRepository.findById(id)
             .orElseThrow(() -> new TodoNotFoundException("존재하지 않는 할 일입니다."));
