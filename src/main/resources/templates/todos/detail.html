@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>할 일 상세 조회</title>
+</head>
+<body>
+    <h1>할 일 상세 조회</h1>
+
+    <p>번호: <span th:text="${todo.id}"></span></p>
+    <p>제목: <span th:text="${todo.title}"></span></p>
+    <p>내용: <span th:text="${todo.content}"></span></p>
+    <p>마감일: <span th:text="${todo.dueDate}"></span></p>
+    <p>상태: <span th:text="${todo.completed} ? '완료' : '진행 중'"></span></p>
+    <p>등록일: <span th:text="${todo.createdAt}"></span></p>
+    <p>수정일: <span th:text="${todo.updatedAt}"></span></p>
+
+    <a th:href="@{/todos}">목록으로 돌아가기</a>
+</body>
+</html>
