@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -81,6 +82,37 @@ class TodoServiceTest {
         // then: 나중에 등록한 할 일이 첫 번째로 옴
         assertThat(todos.get(0).getTitle()).isEqualTo("나중에 등록한 할 일");
         assertThat(todos.get(1).getTitle()).isEqualTo("먼저 등록한 할 일");
+    }
+
+    @Test
+    void deleteTodo_삭제성공() {
+        // given: 할 일 2개 등록 후 삭제할 할 일의 id 찾기
+        todoService.createTodo(createRequest("삭제할 일"));
+        todoService.createTodo(createRequest("남을 일"));
+        Long deleteId = todoService.getTodos().stream()
+                .filter(todo -> todo.getTitle().equals("삭제할 일"))
+                .findFirst()
+                .orElseThrow()
+                .getId();
+
+        // when: 할 일 삭제
+        todoService.deleteTodo(deleteId);
+
+        // then: 삭제한 할 일은 없고 나머지 1개만 남음
+        List<Todo> todos = todoService.getTodos();
+        assertThat(todos).hasSize(1);
+        assertThat(todos.get(0).getTitle()).isEqualTo("남을 일");
+    }
+
+    @Test
+    void deleteTodo_없는할일삭제시예외() {
+        // given: 존재하지 않는 id
+        Long notExistId = 999L;
+
+        // when & then: 삭제하면 예외 발생
+        assertThatThrownBy(() -> todoService.deleteTodo(notExistId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("해당 할 일이 없습니다");
     }
 
     // 테스트용 등록 요청 데이터를 만드는 도우미 메서드
