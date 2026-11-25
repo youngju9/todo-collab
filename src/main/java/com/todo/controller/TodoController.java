@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -58,7 +57,7 @@ public class TodoController {
     }
 
     @PostMapping("/{id}/delete")
-    public String deleteTodo(@PathVariable Long id) {
+    public String deleteTodo(@PathVariable("id") Long id) {
         todoService.deleteTodo(id);
         return "redirect:/todos";
     }
