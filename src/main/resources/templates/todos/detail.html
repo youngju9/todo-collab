@@ -14,7 +14,7 @@
     <p>상태: <span th:text="${todo.completed} ? '완료' : '진행 중'"></span></p>
     <p>등록일: <span th:text="${todo.createdAt}"></span></p>
     <p>수정일: <span th:text="${todo.updatedAt}"></span></p>
-
+    <a th:href="@{/todos/{id}/edit(id=${todo.id})}">수정하기</a>
     <a th:href="@{/todos}">목록으로 돌아가기</a>
 </body>
 </html>

@@ -34,6 +34,12 @@ public class Todo {
         this.completed = false;
     }
 
+    public void update(String title, String content, LocalDate dueDate) {
+        this.title = title;
+        this.content = content;
+        this.dueDate = dueDate;
+    }
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

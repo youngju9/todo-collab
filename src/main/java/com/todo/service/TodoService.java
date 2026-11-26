@@ -9,6 +9,8 @@ import com.todo.repository.TodoRepository;
 import com.todo.dto.TodoCreateRequest;
 import com.todo.entity.Todo;
 import com.todo.exception.TodoNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
+import com.todo.dto.TodoUpdateRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +41,16 @@ public class TodoService {
     public Todo getTodo(Long id) {
         return todoRepository.findById(id)
             .orElseThrow(() -> new TodoNotFoundException("존재하지 않는 할 일입니다."));
+    }
+
+    @Transactional
+    public void updateTodo(Long id, TodoUpdateRequest request) {
+        Todo todo = getTodo(id);
+
+        todo.update(
+            request.getTitle(),
+            request.getContent(),
+            request.getDueDate()
+        );
     }
 }
