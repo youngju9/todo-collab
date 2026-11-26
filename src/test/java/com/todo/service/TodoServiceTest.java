@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import com.todo.dto.TodoUpdateRequest;
+import java.time.LocalDateTime;
+import jakarta.persistence.EntityManager;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,6 +27,9 @@ class TodoServiceTest {
 
     @Autowired
     private TodoRepository todoRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Test
     void createTodo_할일등록성공() {
@@ -142,6 +148,59 @@ class TodoServiceTest {
 
         // when & then: 상세 조회 시 예외 발생 검증
         assertThatThrownBy(() -> todoService.getTodo(id))
+            .isInstanceOf(TodoNotFoundException.class)
+            .hasMessage("존재하지 않는 할 일입니다.");
+    }
+
+    @Test
+    void updateTodo_수정성공() {
+        // given: 수정할 할 일 등록
+        todoService.createTodo(createRequest("수정 전 제목"));
+        entityManager.flush();
+        entityManager.clear();
+
+        Todo savedTodo = todoRepository.findAll().get(0);
+
+        Long id = savedTodo.getId();
+        LocalDateTime createdAt = savedTodo.getCreatedAt();
+        LocalDateTime updatedAt = savedTodo.getUpdatedAt();
+        boolean completed = savedTodo.isCompleted();
+
+        TodoUpdateRequest request = new TodoUpdateRequest();
+        request.setTitle("수정 후 제목");
+        request.setContent("수정 후 내용");
+        request.setDueDate(LocalDate.of(2026, 12, 5));
+
+        // when: 할 일 수정
+        todoService.updateTodo(id, request);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        // then: DB에 저장된 수정 결과 검증
+        Todo updatedTodo = todoService.getTodo(id);
+
+        assertThat(updatedTodo.getId()).isEqualTo(id);
+        assertThat(updatedTodo.getTitle()).isEqualTo("수정 후 제목");
+        assertThat(updatedTodo.getContent()).isEqualTo("수정 후 내용");
+        assertThat(updatedTodo.getDueDate()).isEqualTo(LocalDate.of(2026, 12, 5));
+        assertThat(updatedTodo.isCompleted()).isEqualTo(completed);
+        assertThat(updatedTodo.getCreatedAt()).isEqualTo(createdAt);
+        assertThat(updatedTodo.getUpdatedAt()).isAfter(updatedAt);
+    }
+
+    @Test
+    void updateTodo_존재하지않는할일수정() {
+        // given: 존재하지 않는 할 일 ID 및 수정 데이터
+        Long id = Long.MAX_VALUE;
+
+        TodoUpdateRequest request = new TodoUpdateRequest();
+        request.setTitle("수정할 제목");
+        request.setContent("수정할 내용");
+        request.setDueDate(LocalDate.of(2026, 12, 5));
+
+        // when & then: 수정 시 예외 발생 검증
+        assertThatThrownBy(() -> todoService.updateTodo(id, request))
             .isInstanceOf(TodoNotFoundException.class)
             .hasMessage("존재하지 않는 할 일입니다.");
     }
