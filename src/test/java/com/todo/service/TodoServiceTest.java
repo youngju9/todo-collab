@@ -153,7 +153,7 @@ class TodoServiceTest {
     }
 
     @Test
-    void updateTodo_수정성공() {
+    void updateTodo_수정성공() throws InterruptedException {
         // given: 수정할 할 일 등록
         todoService.createTodo(createRequest("수정 전 제목"));
         entityManager.flush();
@@ -172,6 +172,7 @@ class TodoServiceTest {
         request.setDueDate(LocalDate.of(2026, 12, 5));
 
         // when: 할 일 수정
+        Thread.sleep(10);
         todoService.updateTodo(id, request);
 
         entityManager.flush();
