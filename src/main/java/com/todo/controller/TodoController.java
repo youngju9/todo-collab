@@ -94,4 +94,10 @@ public class TodoController {
         todoService.deleteTodo(id);
         return "redirect:/todos";
     }
+
+    @PostMapping("/{id}/toggle")
+    public String toggleTodo(@PathVariable("id") Long id) {
+        todoService.toggleTodo(id);
+        return "redirect:/todos";
+    }
 }

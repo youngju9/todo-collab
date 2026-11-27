@@ -40,6 +40,10 @@ public class Todo {
         this.dueDate = dueDate;
     }
 
+    public void toggleCompleted() {
+        this.completed = !this.completed;
+    }
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
