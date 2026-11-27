@@ -53,4 +53,10 @@ public class TodoService {
             request.getDueDate()
         );
     }
+
+    @Transactional
+    public void toggleTodo(Long id) {
+        Todo todo = getTodo(id);
+        todo.toggleCompleted();
+    }
 }

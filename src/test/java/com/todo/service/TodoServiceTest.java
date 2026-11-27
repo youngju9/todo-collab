@@ -206,6 +206,61 @@ class TodoServiceTest {
             .hasMessage("존재하지 않는 할 일입니다.");
     }
 
+    @Test
+    void toggleTodo_미완료에서완료로변경() {
+        // given: 진행 중인 할 일 등록
+        todoService.createTodo(createRequest("완료할 일"));
+        entityManager.flush();
+        entityManager.clear();
+
+        Long id = todoRepository.findAll().get(0).getId();
+
+        // when: 완료 상태 변경
+        todoService.toggleTodo(id);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        // then: DB에 완료 상태로 저장됨
+        Todo toggledTodo = todoService.getTodo(id);
+        assertThat(toggledTodo.isCompleted()).isTrue();
+    }
+
+    @Test
+    void toggleTodo_완료에서미완료로변경() {
+        // given: 할 일 등록 후 완료 상태로 변경
+        todoService.createTodo(createRequest("되돌릴 일"));
+        entityManager.flush();
+        entityManager.clear();
+
+        Long id = todoRepository.findAll().get(0).getId();
+
+        todoService.toggleTodo(id);
+        entityManager.flush();
+        entityManager.clear();
+
+        // when: 한 번 더 상태 변경
+        todoService.toggleTodo(id);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        // then: DB에 다시 진행 중 상태로 저장됨
+        Todo toggledTodo = todoService.getTodo(id);
+        assertThat(toggledTodo.isCompleted()).isFalse();
+    }
+
+    @Test
+    void toggleTodo_존재하지않는할일() {
+        // given: 존재하지 않는 할 일 ID
+        Long id = Long.MAX_VALUE;
+
+        // when & then: 상태 변경 시 예외 발생 검증
+        assertThatThrownBy(() -> todoService.toggleTodo(id))
+            .isInstanceOf(TodoNotFoundException.class)
+            .hasMessage("존재하지 않는 할 일입니다.");
+    }
+
     // 테스트용 등록 요청 데이터를 만드는 도우미 메서드
     private TodoCreateRequest createRequest(String title) {
         TodoCreateRequest request = new TodoCreateRequest();
